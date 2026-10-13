@@ -1,0 +1,454 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Expense Calculator</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 24px 16px;
+      font-family: Arial, sans-serif;
+      background: #f3f6fb;
+      color: #1f2937;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    header h1 {
+      margin-bottom: 8px;
+      color: #1d4ed8;
+      font-size: 28px;
+    }
+
+    header p {
+      color: #64748b;
+      margin: 0;
+    }
+
+    .card {
+      background: white;
+      padding: 24px;
+      margin-bottom: 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    }
+
+    .total-card {
+      background: #1d4ed8;
+      color: white;
+      text-align: center;
+    }
+
+    .total-card p {
+      margin: 0 0 10px;
+      font-size: 15px;
+    }
+
+    .total-amount {
+      font-size: 36px;
+      font-weight: bold;
+      overflow-wrap: anywhere;
+    }
+
+    .expense-count {
+      margin-top: 10px;
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      margin-bottom: 16px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    input:focus {
+      outline: 2px solid #93c5fd;
+      border-color: #2563eb;
+    }
+
+    button {
+      border: none;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .add-button {
+      width: 100%;
+      background: #2563eb;
+      color: white;
+    }
+
+    .add-button:hover {
+      background: #1d4ed8;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .expense-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .expense-item:last-child {
+      border-bottom: none;
+    }
+
+    .expense-name {
+      font-weight: bold;
+      overflow-wrap: anywhere;
+    }
+
+    .expense-date {
+      margin-top: 5px;
+      color: #64748b;
+      font-size: 12px;
+    }
+
+    .expense-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .expense-amount {
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .delete-button {
+      background: #fee2e2;
+      color: #b91c1c;
+      padding: 9px 11px;
+    }
+
+    .delete-button:hover {
+      background: #fecaca;
+    }
+
+    .empty-message {
+      text-align: center;
+      padding: 24px 0;
+      color: #64748b;
+    }
+
+    footer {
+      text-align: center;
+      color: #94a3b8;
+      font-size: 12px;
+      padding: 8px;
+    }
+
+    @media (max-width: 420px) {
+      body {
+        padding: 16px 10px;
+      }
+
+      .card {
+        padding: 18px;
+      }
+
+      header h1 {
+        font-size: 24px;
+      }
+
+      .total-amount {
+        font-size: 30px;
+      }
+
+      .expense-item {
+        align-items: flex-start;
+      }
+
+      .expense-right {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 8px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+    <header>
+      <h1>💰 Daily Expense Tracker</h1>
+      <p>Keep track of where your money goes.</p>
+      <p id="todayDate" style="margin-top: 10px;"></p>
+    </header>
+
+    <section class="card total-card">
+      <p>Total Expenses</p>
+      <div class="total-amount" id="totalAmount">RM 0.00</div>
+      <div class="expense-count" id="expenseCount">
+        0 expenses
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Add an Expense</h2>
+
+      <form id="expenseForm">
+        <label for="expenseName">Expense Name</label>
+        <input
+          type="text"
+          id="expenseName"
+          placeholder="e.g. Lunch, Groceries"
+          maxlength="100"
+          required
+        >
+
+        <label for="expenseAmount">Amount (RM)</label>
+        <input
+          type="number"
+          id="expenseAmount"
+          placeholder="e.g. 15.50"
+          min="0.01"
+          max="1000000000"
+          step="0.01"
+          required
+        >
+
+        <button type="submit" class="add-button">
+          + Add Expense
+        </button>
+      </form>
+    </section>
+
+    <section class="card">
+      <div class="section-heading">
+        <h2>Expense List</h2>
+      </div>
+
+      <div id="expenseList">
+        <p class="empty-message">No expenses yet. Add your first expense!</p>
+      </div>
+    </section>
+
+    <footer>
+      Your expenses are saved in this browser.
+    </footer>
+  </main>
+
+  <script>
+    // Load saved expenses from the browser.
+    let expenses = [];
+
+    try {
+      const savedExpenses = localStorage.getItem("dailyExpenses");
+      const parsedExpenses = savedExpenses
+        ? JSON.parse(savedExpenses)
+        : [];
+
+      if (Array.isArray(parsedExpenses)) {
+        expenses = parsedExpenses.filter(expense =>
+          expense &&
+          typeof expense.name === "string" &&
+          Number.isFinite(expense.amount) &&
+          expense.amount > 0 &&
+          typeof expense.date === "string"
+        );
+      }
+    } catch (error) {
+      expenses = [];
+    }
+
+    // Display today's date.
+    document.getElementById("todayDate").textContent =
+      new Date().toLocaleDateString("en-MY", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+      });
+
+    const expenseForm = document.getElementById("expenseForm");
+    const expenseName = document.getElementById("expenseName");
+    const expenseAmount = document.getElementById("expenseAmount");
+    const expenseList = document.getElementById("expenseList");
+    const totalAmount = document.getElementById("totalAmount");
+    const expenseCount = document.getElementById("expenseCount");
+
+    // Format numbers as Malaysian Ringgit.
+    function formatRM(amount) {
+      return "RM " + amount.toLocaleString("en-MY", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    // Save expenses to browser storage.
+    function saveExpenses() {
+      try {
+        localStorage.setItem(
+          "dailyExpenses",
+          JSON.stringify(expenses)
+        );
+      } catch (error) {
+        alert("Unable to save expenses. Please check your browser storage.");
+      }
+    }
+
+    // Add a new expense.
+    expenseForm.addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const name = expenseName.value.trim();
+      const amount = Number(expenseAmount.value);
+
+      if (
+        !name ||
+        !Number.isFinite(amount) ||
+        amount < 0.01 ||
+        amount > 1000000000
+      ) {
+        alert("Please enter a valid expense name and amount.");
+        return;
+      }
+
+      expenses.push({
+        id: Date.now().toString() + "-" +
+            Math.random().toString(36).slice(2),
+        name: name,
+        amount: Math.round(amount * 100) / 100,
+        date: new Date().toISOString()
+      });
+
+      saveExpenses();
+      renderExpenses();
+
+      expenseForm.reset();
+      expenseName.focus();
+    });
+
+    // Delete an expense by its unique ID.
+    function deleteExpense(id) {
+      expenses = expenses.filter(expense => expense.id !== id);
+      saveExpenses();
+      renderExpenses();
+    }
+
+    // Update the list and total on screen.
+    function renderExpenses() {
+      expenseList.replaceChildren();
+
+      const total = expenses.reduce(
+        (sum, expense) => sum + expense.amount,
+        0
+      );
+
+      totalAmount.textContent = formatRM(total);
+      expenseCount.textContent =
+        expenses.length + (expenses.length === 1
+          ? " expense"
+          : " expenses");
+
+      if (expenses.length === 0) {
+        const emptyMessage = document.createElement("p");
+        emptyMessage.className = "empty-message";
+        emptyMessage.textContent =
+          "No expenses yet. Add your first expense!";
+        expenseList.appendChild(emptyMessage);
+        return;
+      }
+
+      // Show newest expenses first.
+      [...expenses].reverse().forEach(function(expense) {
+        const item = document.createElement("div");
+        item.className = "expense-item";
+
+        const details = document.createElement("div");
+
+        const name = document.createElement("div");
+        name.className = "expense-name";
+        name.textContent = expense.name;
+
+        const date = document.createElement("div");
+        date.className = "expense-date";
+        date.textContent = new Date(expense.date).toLocaleString(
+          "en-MY",
+          {
+            day: "numeric",
+            month: "short",
+            hour: "2-digit",
+            minute: "2-digit"
+          }
+        );
+
+        details.append(name, date);
+
+        const right = document.createElement("div");
+        right.className = "expense-right";
+
+        const amount = document.createElement("span");
+        amount.className = "expense-amount";
+        amount.textContent = formatRM(expense.amount);
+
+        const deleteButton = document.createElement("button");
+        deleteButton.className = "delete-button";
+        deleteButton.type = "button";
+        deleteButton.textContent = "Delete";
+        deleteButton.setAttribute(
+          "aria-label",
+          "Delete " + expense.name
+        );
+
+        deleteButton.addEventListener("click", function() {
+          deleteExpense(expense.id);
+        });
+
+        right.append(amount, deleteButton);
+        item.append(details, right);
+        expenseList.appendChild(item);
+      });
+    }
+
+    // Display saved expenses when the page opens.
+    renderExpenses();
+  </script>
+</body>
+</html>
