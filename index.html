@@ -7,6 +7,36 @@
   <title>Daily Expense Calculator</title>
 
   <style>
+    :root {
+      color-scheme: light;
+      --page-bg: #f3f6fb;
+      --card-bg: #ffffff;
+      --text: #1f2937;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --input-bg: #ffffff;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --delete-bg: #fee2e2;
+      --delete-text: #b91c1c;
+      --shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    }
+
+    body.dark-mode {
+      color-scheme: dark;
+      --page-bg: #0f172a;
+      --card-bg: #1e293b;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --border: #334155;
+      --input-bg: #0f172a;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --delete-bg: #451a24;
+      --delete-text: #fca5a5;
+      --shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    }
+
     * {
       box-sizing: border-box;
     }
@@ -15,12 +45,13 @@
       margin: 0;
       padding: 24px 16px;
       font-family: Arial, sans-serif;
-      background: #f3f6fb;
-      color: #1f2937;
+      background: var(--page-bg);
+      color: var(--text);
+      transition: background 0.2s, color 0.2s;
     }
 
     .container {
-      max-width: 600px;
+      max-width: 650px;
       margin: 0 auto;
     }
 
@@ -29,29 +60,55 @@
       margin-bottom: 24px;
     }
 
-    header h1 {
-      margin-bottom: 8px;
-      color: #1d4ed8;
-      font-size: 28px;
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .header-top h1 {
+      margin: 0;
+      color: var(--primary);
+      font-size: 26px;
+      text-align: left;
     }
 
     header p {
-      color: #64748b;
-      margin: 0;
+      color: var(--muted);
+      margin: 8px 0 0;
+    }
+
+    .theme-button {
+      flex-shrink: 0;
+      background: var(--card-bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      border-radius: 10px;
+      white-space: nowrap;
     }
 
     .card {
-      background: white;
+      background: var(--card-bg);
       padding: 24px;
       margin-bottom: 20px;
       border-radius: 16px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+
+    h2 {
+      font-size: 20px;
+      margin: 0 0 18px;
     }
 
     .total-card {
       background: #1d4ed8;
       color: white;
       text-align: center;
+      border: none;
     }
 
     .total-card p {
@@ -82,14 +139,17 @@
       width: 100%;
       padding: 13px;
       margin-bottom: 16px;
-      border: 1px solid #cbd5e1;
+      border: 1px solid var(--border);
       border-radius: 8px;
       font-size: 16px;
+      background: var(--input-bg);
+      color: var(--text);
     }
 
-    input:focus {
-      outline: 2px solid #93c5fd;
-      border-color: #2563eb;
+    input:focus,
+    button:focus-visible {
+      outline: 2px solid #60a5fa;
+      outline-offset: 2px;
     }
 
     button {
@@ -103,12 +163,53 @@
 
     .add-button {
       width: 100%;
-      background: #2563eb;
+      background: var(--primary);
       color: white;
     }
 
     .add-button:hover {
-      background: #1d4ed8;
+      background: var(--primary-hover);
+    }
+
+    .month-picker {
+      margin-bottom: 20px;
+    }
+
+    .month-picker input {
+      margin-bottom: 0;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .summary-box {
+      background: var(--page-bg);
+      border: 1px solid var(--border);
+      padding: 16px;
+      border-radius: 12px;
+      min-width: 0;
+    }
+
+    .summary-label {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    .summary-value {
+      font-size: 22px;
+      font-weight: bold;
+      overflow-wrap: anywhere;
+    }
+
+    .summary-note {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 8px;
+      line-height: 1.5;
     }
 
     .section-heading {
@@ -121,7 +222,6 @@
 
     .section-heading h2 {
       margin: 0;
-      font-size: 20px;
     }
 
     .expense-item {
@@ -130,7 +230,7 @@
       justify-content: space-between;
       gap: 12px;
       padding: 14px 0;
-      border-bottom: 1px solid #e2e8f0;
+      border-bottom: 1px solid var(--border);
     }
 
     .expense-item:last-child {
@@ -144,7 +244,7 @@
 
     .expense-date {
       margin-top: 5px;
-      color: #64748b;
+      color: var(--muted);
       font-size: 12px;
     }
 
@@ -161,26 +261,28 @@
     }
 
     .delete-button {
-      background: #fee2e2;
-      color: #b91c1c;
+      background: var(--delete-bg);
+      color: var(--delete-text);
       padding: 9px 11px;
     }
 
     .delete-button:hover {
-      background: #fecaca;
+      opacity: 0.8;
     }
 
     .empty-message {
       text-align: center;
       padding: 24px 0;
-      color: #64748b;
+      color: var(--muted);
+      line-height: 1.5;
     }
 
     footer {
       text-align: center;
-      color: #94a3b8;
+      color: var(--muted);
       font-size: 12px;
       padding: 8px;
+      line-height: 1.6;
     }
 
     @media (max-width: 420px) {
@@ -192,12 +294,25 @@
         padding: 18px;
       }
 
-      header h1 {
-        font-size: 24px;
+      .header-top h1 {
+        font-size: 21px;
+      }
+
+      .theme-button {
+        font-size: 13px;
+        padding: 9px;
       }
 
       .total-amount {
         font-size: 30px;
+      }
+
+      .summary-box {
+        padding: 12px;
+      }
+
+      .summary-value {
+        font-size: 18px;
       }
 
       .expense-item {
@@ -215,20 +330,73 @@
 
 <body>
   <main class="container">
+
     <header>
-      <h1>💰 Daily Expense Tracker</h1>
+      <div class="header-top">
+        <h1>💰 Daily Expense Tracker</h1>
+
+        <button
+          type="button"
+          id="themeToggle"
+          class="theme-button"
+          aria-pressed="false"
+        >
+          🌙 Dark Mode
+        </button>
+      </div>
+
       <p>Keep track of where your money goes.</p>
-      <p id="todayDate" style="margin-top: 10px;"></p>
+      <p id="todayDate"></p>
     </header>
 
+    <!-- All-time expense total -->
     <section class="card total-card">
-      <p>Total Expenses</p>
+      <p>Total Expenses (All Time)</p>
       <div class="total-amount" id="totalAmount">RM 0.00</div>
-      <div class="expense-count" id="expenseCount">
-        0 expenses
+      <div class="expense-count" id="expenseCount">0 expenses</div>
+    </section>
+
+    <!-- Monthly spending summary -->
+    <section class="card">
+      <h2>📊 Monthly Spending Summary</h2>
+
+      <div class="month-picker">
+        <label for="selectedMonth">Select Month</label>
+        <input type="month" id="selectedMonth">
+      </div>
+
+      <div class="summary-grid">
+        <div class="summary-box">
+          <div class="summary-label">Monthly Spending</div>
+          <div class="summary-value" id="monthlyTotal">RM 0.00</div>
+          <div class="summary-note" id="monthlyLabel">Selected month</div>
+        </div>
+
+        <div class="summary-box">
+          <div class="summary-label">Number of Expenses</div>
+          <div class="summary-value" id="monthlyCount">0</div>
+          <div class="summary-note">For the selected month</div>
+        </div>
+
+        <div class="summary-box">
+          <div class="summary-label">Average Daily Spending</div>
+          <div class="summary-value" id="dailyAverage">RM 0.00</div>
+          <div class="summary-note" id="averageNote">
+            Based on days elapsed
+          </div>
+        </div>
+
+        <div class="summary-box">
+          <div class="summary-label">Highest Expense</div>
+          <div class="summary-value" id="highestExpense">RM 0.00</div>
+          <div class="summary-note" id="highestExpenseName">
+            No expenses yet
+          </div>
+        </div>
       </div>
     </section>
 
+    <!-- Add expense form -->
     <section class="card">
       <h2>Add an Expense</h2>
 
@@ -259,23 +427,31 @@
       </form>
     </section>
 
+    <!-- Existing expense list -->
     <section class="card">
       <div class="section-heading">
         <h2>Expense List</h2>
       </div>
 
       <div id="expenseList">
-        <p class="empty-message">No expenses yet. Add your first expense!</p>
+        <p class="empty-message">
+          No expenses yet. Add your first expense!
+        </p>
       </div>
     </section>
 
     <footer>
-      Your expenses are saved in this browser.
+      Your expenses are saved in this browser.<br>
+      Monthly summaries are calculated from your saved expense dates.
     </footer>
+
   </main>
 
   <script>
-    // Load saved expenses from the browser.
+    // ------------------------------------------
+    // 1. Load existing expenses from localStorage
+    // ------------------------------------------
+
     let expenses = [];
 
     try {
@@ -290,14 +466,41 @@
           typeof expense.name === "string" &&
           Number.isFinite(expense.amount) &&
           expense.amount > 0 &&
-          typeof expense.date === "string"
+          typeof expense.date === "string" &&
+          Number.isFinite(Date.parse(expense.date))
         );
       }
     } catch (error) {
       expenses = [];
     }
 
-    // Display today's date.
+    // ------------------------------------------
+    // 2. Get page elements
+    // ------------------------------------------
+
+    const expenseForm = document.getElementById("expenseForm");
+    const expenseName = document.getElementById("expenseName");
+    const expenseAmount = document.getElementById("expenseAmount");
+    const expenseList = document.getElementById("expenseList");
+
+    const totalAmount = document.getElementById("totalAmount");
+    const expenseCount = document.getElementById("expenseCount");
+
+    const selectedMonth = document.getElementById("selectedMonth");
+    const monthlyTotal = document.getElementById("monthlyTotal");
+    const monthlyCount = document.getElementById("monthlyCount");
+    const dailyAverage = document.getElementById("dailyAverage");
+    const highestExpense = document.getElementById("highestExpense");
+    const highestExpenseName = document.getElementById("highestExpenseName");
+    const monthlyLabel = document.getElementById("monthlyLabel");
+    const averageNote = document.getElementById("averageNote");
+
+    const themeToggle = document.getElementById("themeToggle");
+
+    // ------------------------------------------
+    // 3. Display today's date
+    // ------------------------------------------
+
     document.getElementById("todayDate").textContent =
       new Date().toLocaleDateString("en-MY", {
         weekday: "long",
@@ -306,14 +509,21 @@
         year: "numeric"
       });
 
-    const expenseForm = document.getElementById("expenseForm");
-    const expenseName = document.getElementById("expenseName");
-    const expenseAmount = document.getElementById("expenseAmount");
-    const expenseList = document.getElementById("expenseList");
-    const totalAmount = document.getElementById("totalAmount");
-    const expenseCount = document.getElementById("expenseCount");
+    // Set the selected month to the current month.
+    function getCurrentMonth() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, "0");
 
-    // Format numbers as Malaysian Ringgit.
+      return `${year}-${month}`;
+    }
+
+    selectedMonth.value = getCurrentMonth();
+
+    // ------------------------------------------
+    // 4. Format Malaysian Ringgit
+    // ------------------------------------------
+
     function formatRM(amount) {
       return "RM " + amount.toLocaleString("en-MY", {
         minimumFractionDigits: 2,
@@ -321,7 +531,10 @@
       });
     }
 
-    // Save expenses to browser storage.
+    // ------------------------------------------
+    // 5. Save expenses without changing the key
+    // ------------------------------------------
+
     function saveExpenses() {
       try {
         localStorage.setItem(
@@ -329,11 +542,16 @@
           JSON.stringify(expenses)
         );
       } catch (error) {
-        alert("Unable to save expenses. Please check your browser storage.");
+        alert(
+          "Unable to save expenses. Please check your browser storage."
+        );
       }
     }
 
-    // Add a new expense.
+    // ------------------------------------------
+    // 6. Add a new expense
+    // ------------------------------------------
+
     expenseForm.addEventListener("submit", function(event) {
       event.preventDefault();
 
@@ -365,14 +583,122 @@
       expenseName.focus();
     });
 
-    // Delete an expense by its unique ID.
+    // ------------------------------------------
+    // 7. Delete an expense
+    // ------------------------------------------
+
     function deleteExpense(id) {
       expenses = expenses.filter(expense => expense.id !== id);
+
       saveExpenses();
       renderExpenses();
     }
 
-    // Update the list and total on screen.
+    // ------------------------------------------
+    // 8. Monthly spending summary
+    // ------------------------------------------
+
+    function renderMonthlySummary() {
+      const month = selectedMonth.value;
+
+      if (!month || !/^\d{4}-\d{2}$/.test(month)) {
+        monthlyTotal.textContent = formatRM(0);
+        monthlyCount.textContent = "0";
+        dailyAverage.textContent = formatRM(0);
+        highestExpense.textContent = formatRM(0);
+        highestExpenseName.textContent = "No expenses yet";
+        monthlyLabel.textContent = "Select a valid month";
+        averageNote.textContent = "";
+        return;
+      }
+
+      // Match each expense to the selected year and month.
+      const monthExpenses = expenses.filter(expense =>
+        expense.date.slice(0, 7) === month
+      );
+
+      const total = monthExpenses.reduce(
+        (sum, expense) => sum + expense.amount,
+        0
+      );
+
+      monthlyTotal.textContent = formatRM(total);
+      monthlyCount.textContent = String(monthExpenses.length);
+
+      // Calculate how many calendar days to use for the average.
+      const [year, monthNumber] = month.split("-").map(Number);
+      const now = new Date();
+
+      const selectedIsCurrentMonth =
+        year === now.getFullYear() &&
+        monthNumber === now.getMonth() + 1;
+
+      const selectedIsFutureMonth =
+        year > now.getFullYear() ||
+        (year === now.getFullYear() &&
+         monthNumber > now.getMonth() + 1);
+
+      const daysInMonth = new Date(year, monthNumber, 0).getDate();
+
+      let daysForAverage;
+
+      if (selectedIsCurrentMonth) {
+        daysForAverage = now.getDate();
+      } else if (selectedIsFutureMonth) {
+        daysForAverage = 0;
+      } else {
+        daysForAverage = daysInMonth;
+      }
+
+      const average = daysForAverage > 0
+        ? total / daysForAverage
+        : 0;
+
+      dailyAverage.textContent = formatRM(average);
+
+      if (selectedIsCurrentMonth) {
+        averageNote.textContent =
+          `Based on ${daysForAverage} elapsed calendar day(s)`;
+      } else if (selectedIsFutureMonth) {
+        averageNote.textContent =
+          "Future month; no daily average yet";
+      } else {
+        averageNote.textContent =
+          `Based on all ${daysInMonth} calendar days`;
+      }
+
+      // Display the month in a readable format.
+      const monthDate = new Date(year, monthNumber - 1, 1);
+
+      monthlyLabel.textContent = monthDate.toLocaleDateString(
+        "en-MY",
+        {
+          month: "long",
+          year: "numeric"
+        }
+      );
+
+      // Find the largest single expense in the selected month.
+      if (monthExpenses.length > 0) {
+        const largest = monthExpenses.reduce((highest, expense) =>
+          expense.amount > highest.amount ? expense : highest
+        );
+
+        highestExpense.textContent = formatRM(largest.amount);
+        highestExpenseName.textContent = largest.name;
+      } else {
+        highestExpense.textContent = formatRM(0);
+        highestExpenseName.textContent = "No expenses this month";
+      }
+    }
+
+    // Recalculate whenever the selected month changes.
+    selectedMonth.addEventListener("change", renderMonthlySummary);
+
+    // ------------------------------------------
+    // 9. Render all saved expenses and totals
+    // ------------------------------------------
+
     function renderExpenses() {
       expenseList.replaceChildren();
 
@@ -381,22 +707,27 @@
         0
       );
 
+      // Preserve the original all-time total.
       totalAmount.textContent = formatRM(total);
+
       expenseCount.textContent =
-        expenses.length + (expenses.length === 1
-          ? " expense"
-          : " expenses");
+        expenses.length +
+        (expenses.length === 1 ? " expense" : " expenses");
+
+      // Refresh the monthly summary as well.
+      renderMonthlySummary();
 
       if (expenses.length === 0) {
         const emptyMessage = document.createElement("p");
         emptyMessage.className = "empty-message";
         emptyMessage.textContent =
           "No expenses yet. Add your first expense!";
+
         expenseList.appendChild(emptyMessage);
         return;
       }
 
-      // Show newest expenses first.
+      // Display newest expenses first.
       [...expenses].reverse().forEach(function(expense) {
         const item = document.createElement("div");
         item.className = "expense-item";
@@ -414,6 +745,7 @@
           {
             day: "numeric",
             month: "short",
+            year: "numeric",
             hour: "2-digit",
             minute: "2-digit"
           }
@@ -443,11 +775,55 @@
 
         right.append(amount, deleteButton);
         item.append(details, right);
+
         expenseList.appendChild(item);
       });
     }
 
-    // Display saved expenses when the page opens.
+    // ------------------------------------------
+    // 10. Dark mode
+    // ------------------------------------------
+
+    function applyTheme(theme) {
+      const isDark = theme === "dark";
+
+      document.body.classList.toggle("dark-mode", isDark);
+
+      themeToggle.textContent = isDark
+        ? "☀️ Light Mode"
+        : "🌙 Dark Mode";
+
+      themeToggle.setAttribute("aria-pressed", String(isDark));
+    }
+
+    // Restore the user's saved theme preference.
+    let savedTheme = "light";
+
+    try {
+      savedTheme = localStorage.getItem("expenseTheme") || "light";
+    } catch (error) {
+      savedTheme = "light";
+    }
+
+    applyTheme(savedTheme === "dark" ? "dark" : "light");
+
+    themeToggle.addEventListener("click", function() {
+      const isDark = document.body.classList.contains("dark-mode");
+      const newTheme = isDark ? "light" : "dark";
+
+      applyTheme(newTheme);
+
+      try {
+        localStorage.setItem("expenseTheme", newTheme);
+      } catch (error) {
+        // The theme still works for this page session.
+      }
+    });
+
+    // ------------------------------------------
+    // 11. Show saved expenses on page load
+    // ------------------------------------------
+
     renderExpenses();
   </script>
 </body>
